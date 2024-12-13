@@ -1,0 +1,35 @@
+groups:
+  core:
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+    version: "v1.0.0"
+  core-next:
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+    version: "develop"
+  base:
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+  base-next:
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+    version: "develop"
+  base-next-next:
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@develop
+    version: "develop"
+  standard:
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+      - go.lumeweb.com/portal-plugin-ipfs@latest
+    version: "v2.0.0"
+  standard-next:
+      plugins:
+          - go.lumeweb.com/portal-plugin-dashboard@latest
+          - go.lumeweb.com/portal-plugin-ipfs@latest
+      version: "develop"
+  standard-next-next:
+    plugins:
+        - go.lumeweb.com/portal-plugin-dashboard@develop
+        - go.lumeweb.com/portal-plugin-ipfs@develop
+    version: "develop"
