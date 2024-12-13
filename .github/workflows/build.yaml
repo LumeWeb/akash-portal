@@ -61,7 +61,7 @@ jobs:
 
       - if: steps.cache-xportal.outputs.cache-hit != 'true'
         name: Install xportal
-        run: go install go.lumeweb.com/xportal/cmd/xportal@v0.2.8
+        run: go install go.lumeweb.com/xportal/cmd/xportal@v0.2.10
 
       - name: Build portal
         run: |
