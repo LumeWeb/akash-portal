@@ -61,12 +61,12 @@ jobs:
 
       - if: steps.cache-xportal.outputs.cache-hit != 'true'
         name: Install xportal
-        run: go install go.lumeweb.com/xportal/cmd/xportal@v0.2.10
+        run: GOSUMDB=off GOPROXY=direct go install go.lumeweb.com/xportal/cmd/xportal@v0.2.10
 
       - name: Build portal
         run: |
           PLUGINS=$(echo '${{ toJSON(matrix.plugins) }}' | jq -r 'join(" --with ")')
-          PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
+          GOPROXY=direct PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
 
       - uses: docker/setup-buildx-action@v3
 
