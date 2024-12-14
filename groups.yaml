@@ -23,6 +23,10 @@ groups:
     version: "develop"
     plugins:
       - go.lumeweb.com/portal-plugin-dashboard@latest
+  base-5f70ecf1:
+    version: "5f70ecf18664657395fcf7202ec5b4ce260fe23b"
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest 
   base-next-next:
     version: "develop"
     plugins:
