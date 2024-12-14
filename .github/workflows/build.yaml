@@ -52,14 +52,15 @@ jobs:
           go-version: '1.22'
           cache: true
 
-      - name: Cache xportal
-        id: cache-xportal
-        uses: actions/cache@v3
-        with:
-          path: ~/go/bin/xportal
-          key: ${{ runner.os }}-xportal-${{ hashFiles('go.mod', 'go.sum') }}
+#      - name: Cache xportal
+#        id: cache-xportal
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/go/bin/xportal
+#          key: ${{ runner.os }}-xportal-${{ hashFiles('go.mod', 'go.sum') }}
 
-      - if: steps.cache-xportal.outputs.cache-hit != 'true'
+      -
+#        if: steps.cache-xportal.outputs.cache-hit != 'true'
         name: Install xportal
         run: GOSUMDB=off GOPROXY=direct go install go.lumeweb.com/xportal/cmd/xportal@v0.2.10
 
