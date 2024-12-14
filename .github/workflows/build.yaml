@@ -79,12 +79,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase names
+        id: names
+        run: |
+          echo "repo=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+          echo "group=${MATRIX_GROUP,,}" >> $GITHUB_OUTPUT
+        env:
+          MATRIX_GROUP: ${{ matrix.group }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           push: true
           context: .
           tags: |
-            ghcr.io/${{ github.repository }}:${{ matrix.group }}
+            ghcr.io/${{ steps.names.outputs.repo }}:${{ steps.names.outputs.group }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
