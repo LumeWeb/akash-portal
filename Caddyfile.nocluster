@@ -1,0 +1,13 @@
+{
+    admin off
+}
+
+# Handle all domains matching the PORTAL_CORE_DOMAIN
+*.{$PORTAL_CORE_DOMAIN} {
+    reverse_proxy localhost:{$PORTAL_CORE_PORT}
+}
+
+# Handle direct domain access
+:80, :443 {
+    reverse_proxy localhost:{$PORTAL_CORE_PORT}
+}
