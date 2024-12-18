@@ -1,0 +1,22 @@
+{
+    # Enable admin API for clustering
+    admin off
+    
+    # Configure storage if clustering is enabled
+    {$PORTAL_CORE_CLUSTERED_ENABLED:false} {
+        storage etcd {
+            endpoints {$PORTAL_CORE_CLUSTERED_ETCD_ENDPOINTS}
+            namespace {$PORTAL_CORE_CLUSTERED_ETCD_PREFIX}/caddy
+        }
+    }
+}
+
+# Handle all domains matching the PORTAL_CORE_DOMAIN
+*.{$PORTAL_CORE_DOMAIN} {
+    reverse_proxy localhost:{$PORTAL_CORE_PORT}
+}
+
+# Handle direct domain access
+:{80, 443} {
+    reverse_proxy localhost:{$PORTAL_CORE_PORT}
+}
