@@ -1,6 +1,6 @@
 FROM caddy:2.9-builder AS builder
 
-RUN xcaddy build \
+RUN GOPROXY=direct xcaddy build \
     --with go.lumeweb.com/caddy-etcd \
     --with github.com/anxuanzi/caddy-dns-ClouDNS
 
