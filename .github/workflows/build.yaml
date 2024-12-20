@@ -63,7 +63,7 @@ jobs:
       -
 #        if: steps.cache-xportal.outputs.cache-hit != 'true'
         name: Install xportal
-        run: GOSUMDB=off GOPROXY=direct go install go.lumeweb.com/xportal/cmd/xportal@v0.2.11
+        run: GOSUMDB=off GOPROXY=direct go install go.lumeweb.com/xportal/cmd/xportal@v0.2.12
 
       - name: Build portal
         run: |
