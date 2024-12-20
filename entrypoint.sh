@@ -14,21 +14,21 @@ if [ "${PORTAL_CORE_CLUSTERED_ENABLED}" = "true" ]; then
         fi
     done
 
-    # Remove TLS block from Caddyfile if TLS env vars are empty
-    if [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_CERT}" ] || [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_KEY}" ]; then
-        sed -i '/tls/,/}/d' /etc/caddy/Caddyfile
-        sed -i '/^$/d' /etc/caddy/Caddyfile
-    fi
-
     # Start portal in background
     /usr/local/bin/portal &
 
-    # Start Caddy with etcd storage in foreground
-    /usr/bin/caddy run --config /etc/caddy/Caddyfile
+    # Choose appropriate Caddyfile based on TLS configuration
+    if [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_CERT}" ] || [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_KEY}" ]; then
+        echo "Starting Caddy with cluster config (no TLS)"
+        /usr/bin/caddy run --config /etc/caddy/Caddyfile.cluster.notls
+    else
+        echo "Starting Caddy with cluster config (with TLS)"
+        /usr/bin/caddy run --config /etc/caddy/Caddyfile.cluster
+    fi
 else
     # Start portal in background
     /usr/local/bin/portal &
 
-    # Start Caddy without etcd storage in foreground
+    echo "Starting Caddy without clustering"
     /usr/bin/caddy run --config /etc/caddy/Caddyfile.nocluster
 fi
