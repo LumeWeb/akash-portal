@@ -2,6 +2,12 @@
 	# Enable admin API for clustering
 	admin off
 
+	# Global ACME DNS configuration for all sites
+	acme_dns cloudns {
+		auth_id "{$CLOUDNS_AUTH_ID}"
+		auth_password "{$CLOUDNS_AUTH_PASSWORD}"
+	}
+
 	# Configure storage for clustering
 	storage etcd {
 		prefix "{$PORTAL_CORE_CLUSTERED_ETCD_PREFIX}"
