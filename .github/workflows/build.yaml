@@ -68,7 +68,7 @@ jobs:
       - name: Build portal
         run: |
           PLUGINS=$(echo '${{ toJSON(matrix.plugins) }}' | jq -r 'join(" --with ")')
-          GOPROXY=direct PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
+          GOPROXY=direct XPORTAL_DISABLE_CGO=1 PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
 
       - uses: docker/setup-buildx-action@v3
 
