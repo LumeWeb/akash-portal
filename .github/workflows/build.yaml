@@ -94,5 +94,5 @@ jobs:
           context: .
           tags: |
             ghcr.io/${{ steps.names.outputs.repo }}:${{ steps.names.outputs.group }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.group }}
+          cache-to: type=gha,mode=min,scope=${{ matrix.group }}
