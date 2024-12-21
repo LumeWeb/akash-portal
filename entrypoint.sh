@@ -15,7 +15,7 @@ if [ "${PORTAL_CORE_CLUSTERED_ENABLED}" = "true" ]; then
     done
 
     # Start portal in background
-    /usr/local/bin/portal &
+    /usr/local/bin/portal -env &
 
     # Choose appropriate Caddyfile based on TLS configuration
     if [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_CERT}" ] || [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_KEY}" ]; then
@@ -27,7 +27,7 @@ if [ "${PORTAL_CORE_CLUSTERED_ENABLED}" = "true" ]; then
     fi
 else
     # Start portal in background
-    /usr/local/bin/portal &
+    /usr/local/bin/portal -env &
 
     echo "Starting Caddy without clustering"
     /usr/bin/caddy run --config /etc/caddy/Caddyfile.nocluster
