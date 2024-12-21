@@ -8,6 +8,15 @@
 		auth_password "{$CLOUDNS_AUTH_PASSWORD}"
 	}
 
+	tls {
+		acme {
+			resolvers 1.1.1.1 1.0.0.1
+			disable_tlsalpn_challenge
+			disable_http_challenge
+			dns_ttl 30s
+		}
+	}
+
 	# Configure storage for clustering
 	storage etcd {
 		prefix "{$PORTAL_CORE_CLUSTERED_ETCD_PREFIX}"
