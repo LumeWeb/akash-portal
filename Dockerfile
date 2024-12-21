@@ -12,4 +12,7 @@ COPY retry.sh /retry.sh
 
 RUN chmod +x /entrypoint.sh
 
+ENV XDG_CONFIG_HOME /config
+ENV XDG_DATA_HOME /data
+
 ENTRYPOINT ["/entrypoint.sh"]
