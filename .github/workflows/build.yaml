@@ -11,8 +11,10 @@ on:
         type: string
 
 env:
-  YQ_VERSION: v4.40.5  # Pin YQ version for stability
-  XPORTAL_VERSION: v0.2.12  # Pin xportal version
+  YQ_VERSION: v4.40.5
+  XPORTAL_VERSION: v0.2.12
+  XCADDY_VERSION: v0.3.5
+  GO_VERSION: '1.22'
 
 jobs:
   prepare:
@@ -22,15 +24,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache yq binary
-        id: cache-yq
+      # Cache the entire tools directory
+      - name: Cache tools
+        id: cache-tools
         uses: actions/cache@v4
         with:
-          path: /usr/local/bin/yq
-          key: ${{ runner.os }}-yq-${{ env.YQ_VERSION }}
+          path: |
+            /usr/local/bin/yq
+            ~/go/bin/jq
+          key: ${{ runner.os }}-tools-${{ env.YQ_VERSION }}
 
       - name: Install yq
-        if: steps.cache-yq.outputs.cache-hit != 'true'
+        if: steps.cache-tools.outputs.cache-hit != 'true'
         run: |
           gh release download ${{ env.YQ_VERSION }} --repo mikefarah/yq --pattern 'yq_linux_amd64' --output /usr/local/bin/yq
           chmod +x /usr/local/bin/yq
@@ -46,8 +51,63 @@ jobs:
           fi
           echo "matrix=$(yq -o=j '.groups' groups.yaml | jq -c "{include: ($FILTER)}" | jq -c .include)" >> $GITHUB_OUTPUT
 
+  build-caddy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      # Cache Go modules
+      - name: Go Modules Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ env.GO_VERSION }}-
+
+      - name: Cache xcaddy
+        id: cache-xcaddy
+        uses: actions/cache@v4
+        with:
+          path: ~/go/bin/xcaddy
+          key: ${{ runner.os }}-xcaddy-${{ env.XCADDY_VERSION }}-${{ env.GO_VERSION }}
+
+      - name: Install xcaddy
+        if: steps.cache-xcaddy.outputs.cache-hit != 'true'
+        run: |
+          GOSUMDB=off GOPROXY=direct go install github.com/caddyserver/xcaddy/cmd/xcaddy@${{ env.XCADDY_VERSION }}
+
+      - name: Cache Caddy build
+        id: cache-caddy
+        uses: actions/cache@v4
+        with:
+          path: ./caddy
+          key: ${{ runner.os }}-caddy-${{ hashFiles('**/go.sum') }}-${{ env.GO_VERSION }}-2.9
+
+      - name: Build Caddy
+        if: steps.cache-caddy.outputs.cache-hit != 'true'
+        run: |
+          GOPROXY=direct xcaddy build \
+            --with go.lumeweb.com/caddy-etcd \
+            --with github.com/anxuanzi/caddy-dns-ClouDNS \
+            --output ./caddy
+
+      - name: Upload Caddy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: caddy-binary
+          path: ./caddy
+          retention-days: 1
+
   build:
-    needs: prepare
+    needs: [prepare, build-caddy]
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -62,17 +122,38 @@ jobs:
 
       - uses: actions/setup-go@v4
         with:
-          go-version: '1.22'
+          go-version: ${{ env.GO_VERSION }}
           cache: true
           cache-dependency-path: go.sum
 
-      # Cache xportal download but not the build
+      - name: Download Caddy artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: caddy-binary
+          path: ./caddy-bin
+
+      - name: Prepare Caddy binary
+        run: |
+          chmod +x ./caddy-bin/caddy
+          mv ./caddy-bin/caddy ./caddy
+
+      # Cache Go modules for main build
+      - name: Go Modules Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-build-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-build-${{ env.GO_VERSION }}-
+
       - name: Cache xportal binary
         id: cache-xportal
         uses: actions/cache@v4
         with:
           path: ~/go/bin/xportal
-          key: ${{ runner.os }}-xportal-${{ env.XPORTAL_VERSION }}
+          key: ${{ runner.os }}-xportal-${{ env.XPORTAL_VERSION }}-${{ env.GO_VERSION }}
 
       - name: Install xportal with retry
         if: steps.cache-xportal.outputs.cache-hit != 'true'
@@ -84,7 +165,17 @@ jobs:
           command: |
             GOSUMDB=off GOPROXY=direct go install go.lumeweb.com/xportal/cmd/xportal@${{ env.XPORTAL_VERSION }}
 
+      # Cache portal build artifacts
+      - name: Cache portal build
+        id: cache-portal
+        uses: actions/cache@v4
+        with:
+          path: |
+            ./portal
+          key: ${{ runner.os }}-portal-${{ matrix.group }}-${{ hashFiles('**/go.sum') }}-${{ matrix.version }}
+
       - name: Build portal with retry
+        if: steps.cache-portal.outputs.cache-hit != 'true'
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 15
@@ -94,9 +185,14 @@ jobs:
             PLUGINS=$(echo '${{ toJSON(matrix.plugins) }}' | jq -r 'join(" --with ")')
             GOPROXY=direct XPORTAL_DISABLE_CGO=1 PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
 
-      - uses: docker/setup-buildx-action@v3
+      # Cache Docker layers using GitHub cache
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
         with:
           buildkitd-flags: --debug
+          driver-opts: |
+            image=moby/buildkit:v0.12.0
+            network=host
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -113,7 +209,7 @@ jobs:
         env:
           MATRIX_GROUP: ${{ matrix.group }}
 
-      # Improved Docker layer caching
+      # Use multi-level caching for Docker
       - name: Build and push Docker image with retry
         uses: nick-fields/retry@v2
         with:
@@ -124,6 +220,7 @@ jobs:
             docker buildx build \
               --push \
               --cache-from type=gha,scope=docker-${{ matrix.group }} \
+              --cache-from type=registry,ref=ghcr.io/${{ steps.names.outputs.repo }}:${{ steps.names.outputs.group }} \
               --cache-to type=gha,mode=max,scope=docker-${{ matrix.group }} \
               --build-arg BUILDKIT_INLINE_CACHE=1 \
               --tag ghcr.io/${{ steps.names.outputs.repo }}:${{ steps.names.outputs.group }} \
