@@ -165,15 +165,7 @@ jobs:
           command: |
             GOSUMDB=off GOPROXY=direct go install go.lumeweb.com/xportal/cmd/xportal@${{ env.XPORTAL_VERSION }}
 
-      # Cache portal build artifacts
-      - name: Cache portal build
-        id: cache-portal
-        uses: actions/cache@v4
-        with:
-          path: |
-            ./portal
-          key: ${{ runner.os }}-portal-${{ matrix.group }}-${{ hashFiles('**/go.sum') }}-${{ matrix.version }}
-
+      # Build portal
       - name: Build portal with retry
         if: steps.cache-portal.outputs.cache-hit != 'true'
         uses: nick-fields/retry@v2
