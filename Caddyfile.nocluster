@@ -1,5 +1,7 @@
 {
     admin off
+    # Configure email for TLS certificates
+    email ${CADDY_EMAIL}
 }
 
 # HTTP to HTTPS redirect

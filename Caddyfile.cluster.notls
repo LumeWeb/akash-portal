@@ -1,6 +1,8 @@
 {
 	# Enable admin API for clustering
 	admin off
+	# Configure email for TLS certificates
+	email ${CADDY_EMAIL}
 	# Configure storage for clustering
 	storage etcd {
 		prefix "{$PORTAL__CORE__CLUSTERED__ETCD__PREFIX}"
