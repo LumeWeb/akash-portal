@@ -26,8 +26,8 @@ http://*.{$PORTAL_CORE_DOMAIN}, http://{$PORTAL_CORE_DOMAIN} {
 	redir https://{host}{uri} permanent
 }
 
-# Handle all HTTPS domains
-*.{$PORTAL_CORE_DOMAIN}, {$PORTAL_CORE_DOMAIN} {
+# Handle wildcard HTTPS domains with DNS
+*.{$PORTAL_CORE_DOMAIN} {
 	tls {
 		dns_ttl 30s
 		resolvers 1.1.1.1 1.0.0.1
@@ -36,5 +36,10 @@ http://*.{$PORTAL_CORE_DOMAIN}, http://{$PORTAL_CORE_DOMAIN} {
 			auth_password "{$CLOUDNS_AUTH_PASSWORD}"
 		}
 	}
+	reverse_proxy localhost:{$PORTAL_CORE_PORT}
+}
+
+# Handle root domain HTTPS without DNS
+https://{$PORTAL_CORE_DOMAIN} {
 	reverse_proxy localhost:{$PORTAL_CORE_PORT}
 }
