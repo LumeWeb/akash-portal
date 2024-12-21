@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Validate required env vars when clustering is enabled
-if [ "${PORTAL_CORE_CLUSTERED_ENABLED}" = "true" ]; then
+if [ "${PORTAL__CORE__CLUSTERED__ENABLED}" = "true" ]; then
     required_vars=(
-        "PORTAL_CORE_CLUSTERED_ETCD_ENDPOINTS"
-        "PORTAL_CORE_CLUSTERED_ETCD_PREFIX"
+        "PORTAL__CORE__CLUSTERED__ETCD__ENDPOINTS"
+        "PORTAL__CORE__CLUSTERED__ETCD__PREFIX"
     )
     
     for var in "${required_vars[@]}"; do
@@ -18,7 +18,7 @@ if [ "${PORTAL_CORE_CLUSTERED_ENABLED}" = "true" ]; then
     /usr/local/bin/portal -env &
 
     # Choose appropriate Caddyfile based on TLS configuration
-    if [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_CERT}" ] || [ -z "${PORTAL_CORE_CLUSTERED_ETCD_TLS_KEY}" ]; then
+    if [ -z "${PORTAL__CORE__CLUSTERED__ETCD__TLS_CERT}" ] || [ -z "${PORTAL__CORE__CLUSTERED__ETCD_TLS_KEY}" ]; then
         echo "Starting Caddy with cluster config (no TLS)"
         /usr/bin/caddy run --config /etc/caddy/Caddyfile.cluster.notls
     else
