@@ -9,8 +9,6 @@ groups:
 #      - go.lumeweb.com/portal-plugin-dashboard@latest
   core-next:
     version: "develop"
-    plugins:
-      - go.lumeweb.com/portal-plugin-dashboard@latest
 #  base:
 #    version: "v0.3.2"
 #    plugins:
