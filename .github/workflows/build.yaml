@@ -89,9 +89,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ./caddy
-          key: ${{ runner.os }}-caddy-${{ hashFiles('**/go.sum') || 'no-deps' }}-${{ env.GO_VERSION }}-2.9
-          restore-keys: |
-            ${{ runner.os }}-caddy-
+          key: caddy-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') || 'no-deps' }}-2.9
 
       - name: Build Caddy
         if: steps.cache-caddy.outputs.cache-hit != 'true'
