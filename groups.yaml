@@ -29,6 +29,11 @@ groups:
     version: "develop"
     plugins:
       - go.lumeweb.com/portal-plugin-dashboard@develop
+  ipfs-next-next:
+    version: "develop"
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@develop
+      - go.lumeweb.com/portal-plugin-ipfs@develop
 #  standard:
 #    version: "v0.3.2"
 #    plugins:
