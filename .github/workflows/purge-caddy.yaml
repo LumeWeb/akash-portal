@@ -1,0 +1,37 @@
+name: Purge Caddy Cache
+
+on:
+  workflow_dispatch:
+
+jobs:
+  purge-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Get cache key
+        id: get-key
+        run: |
+          echo "cache_key=${{ runner.os }}-caddy-${{ hashFiles('**/go.sum') }}-${{ env.GO_VERSION }}-2.9" >> $GITHUB_OUTPUT
+        env:
+          GO_VERSION: '1.22'  # Match your main workflow
+
+      - name: Delete cache
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Get the cache ID for the specific key
+          CACHE_ID=$(gh api -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/actions/caches" \
+            --jq ".actions_caches[] | select(.key == \"${{ steps.get-key.outputs.cache_key }}\") | .id")
+          
+          if [ -n "$CACHE_ID" ]; then
+            echo "Deleting cache with ID: $CACHE_ID"
+            gh api --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${{ github.repository }}/actions/caches/$CACHE_ID"
+            echo "Cache deleted successfully"
+          else
+            echo "No cache found with the specified key"
+          fi
