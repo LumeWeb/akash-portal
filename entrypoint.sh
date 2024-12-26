@@ -34,6 +34,8 @@ else
     echo "SQLite mode detected"
 fi
 
+akash-metrics-exporter &
+
 # Validate required env vars when clustering is enabled
 if [ "${PORTAL__CORE__CLUSTERED__ENABLED}" = "true" ]; then
     required_vars=(

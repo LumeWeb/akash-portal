@@ -1,3 +1,4 @@
+FROM ghcr.io/lumeweb/akash-metrics-exporter:develop AS metrics-exporter
 FROM caddy:2.9-alpine
 
 RUN apk add --no-cache bash mysql-client mariadb-connector-c
@@ -9,6 +10,7 @@ COPY Caddyfile.cluster.notls /etc/caddy/Caddyfile.cluster.notls
 COPY Caddyfile.nocluster /etc/caddy/Caddyfile.nocluster
 COPY entrypoint.sh /entrypoint.sh
 COPY retry.sh /retry.sh
+COPY --from=metrics-exporter /usr/bin/metrics-exporter /usr/bin/akash-metrics-exporter
 
 RUN chmod +x /entrypoint.sh
 
