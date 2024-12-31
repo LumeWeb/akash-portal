@@ -4,22 +4,11 @@
     # Configure email for TLS certificates
     email {$CADDY_EMAIL}
 	# Configure storage for clustering
-	storage etcd {
-		prefix "{$CADDY_ETCD_PREFIX}"
-		endpoints {
-			{$PORTAL__CORE__CLUSTERED__ETCD__ENDPOINTS}
-		}
-		timeout {$PORTAL__CORE__CLUSTERED__ETCD__TIMEOUT:5m}
-		auth {
-			username "{$PORTAL__CORE__CLUSTERED__ETCD__USERNAME}"
-			password "{$PORTAL__CORE__CLUSTERED__ETCD__PASSWORD}"
-		}
-		tls {
-			cert "{$PORTAL__CORE__CLUSTERED__ETCD__TLS__CERT}"
-			key "{$PORTAL__CORE__CLUSTERED__ETCD__TLS__KEY}"
-			ca "{$PORTAL__CORE__CLUSTERED__ETCD__TLS__CA}"
-			server__name "{$PORTAL__CORE__CLUSTERED__ETCD__TLS__SERVER_NAME}"
-		}
+	storage s3 {
+	    bucket {$CADDY_S3_BUCKET}
+        host {$CADDY_S3_ENDPOINT}
+        access_key {$CADDY_S3_ACCESS_KEY}
+        secret_key {$CADDY_S3_SECRET_KEY}
 	}
 }
 
@@ -31,10 +20,10 @@ http://*.{$PORTAL__CORE__DOMAIN}, http://{$PORTAL__CORE__DOMAIN} {
 # Handle wildcard HTTPS domains with DNS
 *.{$PORTAL__CORE__DOMAIN} {
 	tls {
-		dns__ttl 30s
+		dns_ttl 30s
 		resolvers 1.1.1.1 1.0.0.1
 		dns cloudns {
-			auth__id "{$CLOUDNS_AUTH_ID}"
+			auth_id "{$CLOUDNS_AUTH_ID}"
 			auth_password "{$CLOUDNS_AUTH_PASSWORD}"
 		}
 	}

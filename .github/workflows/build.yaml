@@ -95,7 +95,7 @@ jobs:
         if: steps.cache-caddy.outputs.cache-hit != 'true'
         run: |
           GOPROXY=direct xcaddy build \
-            --with go.lumeweb.com/caddy-etcd \
+            --with github.com/techknowlogick/certmagic-s3 \
             --with github.com/anxuanzi/caddy-dns-ClouDNS \
             --output ./caddy
 
