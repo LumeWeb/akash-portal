@@ -5,7 +5,7 @@
 	email {$CADDY_EMAIL}
 	# Configure storage for clustering
 	storage etcd {
-		prefix "{$PORTAL__CORE__CLUSTERED__ETCD__PREFIX}"
+		prefix "{$CADDY_ETCD_PREFIX}"
 		endpoints {
 			{$PORTAL__CORE__CLUSTERED__ETCD__ENDPOINTS}
 		}
