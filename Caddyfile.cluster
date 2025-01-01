@@ -10,6 +10,10 @@
         access_key {$CADDY_S3_ACCESS_KEY}
         secret_key {$CADDY_S3_SECRET_KEY}
 	}
+	acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+	cert_issuer acme {
+        disable_tlsalpn_challenge
+    }
 }
 
 # HTTP to HTTPS redirect
@@ -20,7 +24,6 @@ http://*.{$PORTAL__CORE__DOMAIN}, http://{$PORTAL__CORE__DOMAIN} {
 # Handle wildcard HTTPS domains with DNS
 *.{$PORTAL__CORE__DOMAIN} {
 	tls {
-		dns_ttl 30s
 		resolvers 1.1.1.1 1.0.0.1
 		dns cloudns {
 			auth_id "{$CLOUDNS_AUTH_ID}"
