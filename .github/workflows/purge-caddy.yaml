@@ -16,7 +16,7 @@ jobs:
       - name: Get cache key
         id: get-key
         run: |
-          echo "cache_key=caddy-${{ runner.os }}-${GO_VERSION}-no-deps-2.9" >> $GITHUB_OUTPUT
+          echo "cache_key=caddy-${{ runner.os }}-${GO_VERSION}-${{ hashFiles('**/go.sum') || 'no-deps' }}-2.9" >> $GITHUB_OUTPUT    
 
       - name: Delete cache
         env:
