@@ -97,6 +97,7 @@ jobs:
           GOPROXY=direct xcaddy build \
             --with github.com/techknowlogick/certmagic-s3 \
             --with github.com/anxuanzi/caddy-dns-ClouDNS \
+            --replace github.com/anxuanzi/libdns-cloudns=github.com/LumeWeb/libdns-cloudns@master \
             --output ./caddy
 
       - name: Upload Caddy artifact
