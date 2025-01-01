@@ -1,57 +1,53 @@
 groups:
-#  core:
-#    version: "v0.3.2"
-#    plugins:
-#      - go.lumeweb.com/portal-plugin-dashboard@latest
-#  core-latest:
-#    version: "latest"
-#    plugins:
-#      - go.lumeweb.com/portal-plugin-dashboard@latest
+  core:
+    version: "v0.4.0"
+  core-latest:
+    version: "latest"
   core-next:
     version: "develop"
-#  base:
-#    version: "v0.3.2"
-#    plugins:
-#      - go.lumeweb.com/portal-plugin-dashboard@latest
-#  base-latest:
-#    version: "latest"
-#    plugins:
-#      - go.lumeweb.com/portal-plugin-dashboard@latest
+  base:
+    version: "v0.4.0"
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+      - go.lumeweb.com/portal-plugin-frontend@latest
+      - go.lumeweb.com/portal-plugin-ipfs@latest
+  base-latest:
+    version: "latest"
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+      - go.lumeweb.com/portal-plugin-frontend@latest
+      - go.lumeweb.com/portal-plugin-ipfs@latest
   base-next:
     version: "develop"
     plugins:
       - go.lumeweb.com/portal-plugin-dashboard@latest
-  base-5f70ecf1:
-    version: "5f70ecf18664657395fcf7202ec5b4ce260fe23b"
-    plugins:
-      - go.lumeweb.com/portal-plugin-dashboard@latest 
+      - go.lumeweb.com/portal-plugin-frontend@latest
   base-next-next:
     version: "develop"
     plugins:
       - go.lumeweb.com/portal-plugin-dashboard@develop
-  ipfs-next-next:
+      - go.lumeweb.com/portal-plugin-frontend@develop
+  standard:
+    version: "v0.4.0"
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+      - go.lumeweb.com/portal-plugin-frontend@latest
+      - go.lumeweb.com/portal-plugin-ipfs@latest
+  standard-latest:
+    version: "latest"
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@latest
+      - go.lumeweb.com/portal-plugin-frontend@latest
+      - go.lumeweb.com/portal-plugin-ipfs@latest
+  standard-next:
     version: "develop"
     plugins:
-      - go.lumeweb.com/portal-plugin-dashboard@develop
-      - go.lumeweb.com/portal-plugin-frontend@develop
-      - go.lumeweb.com/portal-plugin-ipfs@develop
-#  standard:
-#    version: "v0.3.2"
-#    plugins:
-#      - go.lumeweb.com/portal-plugin-dashboard@latest
-#      - go.lumeweb.com/portal-plugin-ipfs@latest
-#  standard-latest:
-#    version: "latest"
-#    plugins:
-#      - go.lumeweb.com/portal-plugin-dashboard@latest
-#      - go.lumeweb.com/portal-plugin-ipfs@latest
-#  standard-next:
-#    version: "develop"
-#    plugins:
-#          - go.lumeweb.com/portal-plugin-dashboard@latest
-#          - go.lumeweb.com/portal-plugin-ipfs@latest
-#  standard-next-next:
-#    version: "develop"
-#    plugins:
-#        - go.lumeweb.com/portal-plugin-dashboard@develop
-#        - go.lumeweb.com/portal-plugin-ipfs@develop
+          - go.lumeweb.com/portal-plugin-dashboard@latest
+          - go.lumeweb.com/portal-plugin-frontend@latest
+          - go.lumeweb.com/portal-plugin-ipfs@latest
+  standard-next-next:
+    version: "develop"
+    plugins:
+        - go.lumeweb.com/portal-plugin-dashboard@develop
+        - go.lumeweb.com/portal-plugin-frontend@develop
+        - go.lumeweb.com/portal-plugin-ipfs@develop
