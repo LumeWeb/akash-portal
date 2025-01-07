@@ -51,3 +51,9 @@ groups:
         - go.lumeweb.com/portal-plugin-dashboard@develop
         - go.lumeweb.com/portal-plugin-frontend@develop
         - go.lumeweb.com/portal-plugin-ipfs@develop
+  refactor-storage:
+    version: "refactor-storage"
+    plugins:
+      - go.lumeweb.com/portal-plugin-dashboard@develop
+      - go.lumeweb.com/portal-plugin-frontend@develop
+      - go.lumeweb.com/portal-plugin-ipfs@develop
