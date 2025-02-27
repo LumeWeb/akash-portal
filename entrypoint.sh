@@ -1,10 +1,11 @@
 #!/bin/bash
 
-if -f /akash-cfg/etcd.env; then
+if [ -f /akash-cfg/etcd.env ]; then
   set -a
   source /akash-cfg/config.env
   set +a
 fi
+
 
 # Source the retry functionality
 . /retry.sh
