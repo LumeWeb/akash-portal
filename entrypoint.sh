@@ -7,6 +7,11 @@ fi
 # Source the retry functionality
 . /retry.sh
 
+start_portal() {
+    echo "Starting portal with retry mechanism..."
+    retry_command /usr/local/bin/portal -env
+}
+
 preflight_mysql() {
     if [ "$PORTAL__CORE__DB__TYPE" = "mysql" ]; then
         echo "MySQL mode detected"
@@ -97,14 +102,14 @@ run_preflights
 
 # Start the appropriate services
 if [ "${PORTAL__CORE__CLUSTERED__ENABLED}" = "true" ]; then
-    # Start portal in background
-    /usr/local/bin/portal -env &
+    # Start portal with retry mechanism
+    start_portal &
     # Choose appropriate Caddyfile based on TLS configuration
     echo "Starting Caddy with cluster config"
     /usr/bin/caddy run --config /etc/caddy/Caddyfile.cluster --adapter caddyfile
 else
-    # Start portal in background
-    /usr/local/bin/portal -env &
+    # Start portal with retry mechanism
+    start_portal &
     echo "Starting Caddy without clustering"
     /usr/bin/caddy run --config /etc/caddy/Caddyfile.nocluster --adapter caddyfile
 fi
