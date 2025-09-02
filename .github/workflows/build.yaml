@@ -175,6 +175,7 @@ jobs:
           max_attempts: 3
           retry_wait_seconds: 60
           command: |
+            apt-get install -y libwebp-dev
             PLUGINS=$(echo '${{ toJSON(matrix.plugins) }}' | jq -r 'join(" --with ")')
             GOPROXY=direct PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
 
