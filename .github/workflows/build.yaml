@@ -97,7 +97,7 @@ jobs:
         run: |
          CADDY_VERSION=${{ env.CADDY_VERSION }} GOPROXY=direct xcaddy build \
             --with github.com/techknowlogick/certmagic-s3 \
-            --with github.com/anxuanzi/caddy-dns-ClouDNS \
+            --with github.com/caddy-dns/cloudns \
             --output ./caddy
 
       - name: Upload Caddy artifact
