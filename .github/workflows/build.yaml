@@ -176,7 +176,7 @@ jobs:
           retry_wait_seconds: 60
           command: |
             PLUGINS=$(echo '${{ toJSON(matrix.plugins) }}' | jq -r 'join(" --with ")')
-            GOPROXY=direct XPORTAL_DISABLE_CGO=1 PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
+            GOPROXY=direct PORTAL_VERSION="${{ matrix.version }}" xportal build --with $PLUGINS
 
       # Cache Docker layers using GitHub cache
       - name: Set up Docker Buildx
